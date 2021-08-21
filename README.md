@@ -1,2 +1,2 @@
-# Computer_Science_FEM
+# algorithms-exercises
 Created with CodeSandbox
