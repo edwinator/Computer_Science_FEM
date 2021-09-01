@@ -38,6 +38,7 @@ class ArrayList {
     return this.data[idx];
   }
   delete(idx) {
+    const res = this.data[idx];
     delete this.data[idx];
     while (idx < this.length) {
       this.data[idx] = this.data[idx + 1];
@@ -45,6 +46,7 @@ class ArrayList {
     }
     delete this.data[idx];
     this.length--;
+    return res;
   }
 }
 
