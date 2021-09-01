@@ -24,16 +24,78 @@
 */
 
 class LinkedList {
-  // code goes here
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  push(val) {
+    const node = new Node(val);
+    if (!this.head) {
+      this.head = node;
+    } else {
+      this.tail.next = node;
+    }
+    this.tail = node;
+    this.length++;
+  }
+  pop() {
+    return this.delete(this.length - 1);
+  }
+  _find(idx) {
+    if (idx >= this.length) return null;
+    let currIdx = 0;
+    let node = this.head;
+    while (node) {
+      if (currIdx === idx) return node;
+      node = node.next;
+      currIdx++;
+    }
+    return null;
+  }
+  get(idx) {
+    const node = this._find(idx);
+    if (node) {
+      return node.value;
+    } else {
+      return null;
+    }
+  }
+  delete(idx) {
+    if (!this.head) return null;
+    let res;
+    if (idx === 0) {
+      res = this.head;
+      this.head = this.head.next;
+      this.length--;
+      return res.value;
+    }
+    let currIdx = 1;
+    let node = this.head;
+    while (node) {
+      if (idx === currIdx) {
+        res = node.next;
+        node.next = node.next.next;
+        this.length--;
+        return res.value;
+      }
+      node = node.next;
+      currIdx++;
+    }
+    return null;
+  }
 }
 
 class Node {
-  // code goes here
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
 // unit tests
 // do not modify the below code
-describe.skip("LinkedList", function () {
+describe("LinkedList", function () {
   const range = (length) =>
     Array.apply(null, { length: length }).map(Number.call, Number);
   const abcRange = (length) =>
