@@ -22,16 +22,122 @@
 */
 
 class Tree {
-  // code goes here
+  constructor() {
+    this.root = null;
+  }
+  add(value) {
+    if (!this.root) {
+      this.root = new Node(value);
+    } else {
+      this.root.add(value);
+    }
+  }
+  toObject() {
+    return this.root;
+  }
 }
 
 class Node {
   // code also goes here
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
+  add(value) {
+    if (value < this.value) {
+      if (this.left) {
+        this.left.add(value);
+      } else {
+        this.left = new Node(value);
+      }
+      if (!this.right || this.right.height < this.left.height) {
+        this.height = this.left.height + 1;
+      }
+    } else {
+      if (this.right) {
+        this.right.add(value);
+      } else {
+        this.right = new Node(value);
+      }
+      if (!this.left || this.right.height > this.left.height) {
+        this.height = this.right.height + 1;
+      }
+    }
+    this.balance();
+  }
+  balance() {
+    const lHeight = this.left ? this.left.height : 0;
+    const rHeight = this.right ? this.right.height : 0;
+    if (lHeight - rHeight > 1) {
+      // unbalanced
+      const llHeight = this.left.left ? this.left.left.height : 0;
+      const lrHeight = this.left.right ? this.left.right.height : 0;
+      if (llHeight < lrHeight) {
+        // double
+        this.left.rotateRR();
+      }
+      this.rotateLL();
+    } else if (rHeight - lHeight > 1) {
+      const rlHeight = this.right.left ? this.right.left.height : 0;
+      const rrHeight = this.right.right ? this.right.right.height : 0;
+      if (rlHeight > rrHeight) {
+        // double
+        this.right.rotateLL();
+      }
+      this.rotateRR();
+    }
+    // is out of balance?
+    // single or double rotate
+    // rotate on self, or child then self
+  }
+  rotateLL() {
+    const nodeValue = this.value;
+    const nodeRight = this.right;
+    const nodeB = this.left;
+    const nodeC = this.left.left;
+    this.value = nodeB.value;
+    this.right = nodeB;
+    this.left = nodeC;
+    this.right.left = this.right.right;
+    this.right.right = nodeRight;
+    this.right.value = nodeValue;
+    this.right.updateInNewLocation();
+    this.updateInNewLocation();
+  }
+  rotateRR() {
+    const nodeValue = this.value;
+    const nodeLeft = this.left;
+    const nodeB = this.right;
+    const nodeC = this.right.right;
+    this.value = nodeB.value;
+    this.left = nodeB;
+    this.right = nodeC;
+    this.left.right = this.left.left;
+    this.left.left = nodeLeft;
+    this.left.value = nodeValue;
+    this.left.updateInNewLocation();
+    this.updateInNewLocation();
+  }
+  updateInNewLocation() {
+    // calculate new height
+    if (!this.left && !this.right) {
+      this.height = 1;
+    } else if (
+      !this.right ||
+      (this.left && this.left.height < this.right.height)
+    ) {
+      this.height = this.left.height + 1;
+    } else {
+      this.height = this.right.height + 1;
+    }
+  }
 }
 
 // unit tests
 // do not modify the below code
-describe.skip("AVL Tree", function () {
+describe("AVL Tree", function () {
   test("creates a correct tree", () => {
     const nums = [3, 7, 4, 6, 5, 1, 10, 2, 9, 8];
     const tree = new Tree();
